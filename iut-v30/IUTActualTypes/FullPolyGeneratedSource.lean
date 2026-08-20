@@ -137,9 +137,7 @@ theorem ordinary_output_eq_qPilot :
       S.kummer₁ S.qPilotObject := by
   simp [outputObject, ordinaryEquiv, S.horizontalPilot]
 
-/-- Convert the full-poly source into the actual generated-output data.  The record is
-written in the same normal form as the `union_hullAdmissible` field so that the two
-unions are definitionally identical. -/
+/-- Convert the full-poly source into the actual generated-output data. -/
 noncomputable def toGeneratedOutputData :
     GeneratedOutputData.{u, v, max u₄ (max u₂ u₃)} S.container where
   Output := Sum (S.C₀ ≃ S.C₁) S.ExtraChoice
@@ -171,6 +169,27 @@ noncomputable def toGeneratedRHSData :
   outputs := S.toGeneratedOutputData
   union_hullAdmissible := by
     intro i
+    let G : GeneratedOutputData.{u, v, max u₄ (max u₂ u₃)} S.container :=
+      { Output := Sum (S.C₀ ≃ S.C₁) S.ExtraChoice
+        outputNonempty := ⟨.inl S.ordinaryEquiv⟩
+        realize := fun c => match c with
+          | .inl p => S.realize (p (S.kummer₀ S.thetaPilotObject))
+          | .inr e => S.realize (S.extraOutput e)
+        support := S.support
+        realize_eq_integral_outside := by
+          intro c i vQ hv
+          cases c with
+          | inl p => exact S.realize_eq_integral_outside _ i vQ hv
+          | inr e => exact S.realize_eq_integral_outside _ i vQ hv
+        realize_le_logShell := by
+          intro c i
+          cases c with
+          | inl p => exact S.realize_le_logShell _ i
+          | inr e => exact S.realize_le_logShell _ i }
+    have hG : S.toGeneratedOutputData.unionRegion i = G.unionRegion i := by
+      ext vQ x
+      rfl
+    rw [hG]
     exact S.union_hullAdmissible i
 
 /-- The source-shaped data construct one distinguished native output. -/
@@ -180,7 +199,9 @@ noncomputable def toGeneratedNativeSource :
   native := .inl S.ordinaryEquiv
   nativeVolume := by
     change S.vol.processionVol
-      (S.realize (S.ordinaryEquiv (S.kummer₀ S.thetaPilotObject))) = Q.lhs
+      (S.realize
+        ((conjugateEquiv S.kummer₀ S.kummer₁ S.horizontal)
+          (S.kummer₀ S.thetaPilotObject))) = Q.lhs
     rw [conjugateEquiv_apply_kummer, S.horizontalPilot]
     exact S.qVolume
   processionVol_mono := S.processionVol_mono
