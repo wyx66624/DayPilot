@@ -18,6 +18,9 @@ Two former assumptions are absent:
 * ordinary-branch membership is definitional in the generated choice type.
 -/
 
+set_option linter.unusedVariables false
+set_option linter.checkUnivs false
+
 namespace IUTActualTypes
 
 open Iut NumberField
@@ -114,17 +117,16 @@ namespace FullPolyGeneratedSource
 
 variable {D : InitialThetaData AG TG} {Q : QPilotData D}
 
-inductive Choice
-    (S : FullPolyGeneratedSource.{u, v, w, u₀, u₁, u₂, u₃, u₄} D Q) where
-  | ordinary (p : S.C₀ ≃ S.C₁)
-  | extra (e : S.ExtraChoice)
-
 variable (S : FullPolyGeneratedSource.{u, v, w, u₀, u₁, u₂, u₃, u₄} D Q)
+
+/-- Ordinary and extra source choices.  Using `Sum` makes the generated union
+definitionally identical to the structure field above. -/
+abbrev Choice := Sum (S.C₀ ≃ S.C₁) S.ExtraChoice
 
 /-- Output object of an ordinary or extra source choice. -/
 def outputObject : S.Choice → S.C₁
-  | .ordinary p => p (S.kummer₀ S.thetaPilotObject)
-  | .extra e => S.extraOutput e
+  | .inl p => p (S.kummer₀ S.thetaPilotObject)
+  | .inr e => S.extraOutput e
 
 /-- The full-poly ordinary representative determined by Kummer conjugation. -/
 def ordinaryEquiv : S.C₀ ≃ S.C₁ :=
@@ -132,7 +134,7 @@ def ordinaryEquiv : S.C₀ ≃ S.C₁ :=
 
 @[simp]
 theorem ordinary_output_eq_qPilot :
-    S.outputObject (.ordinary S.ordinaryEquiv) =
+    S.outputObject (.inl S.ordinaryEquiv) =
       S.kummer₁ S.qPilotObject := by
   simp [outputObject, ordinaryEquiv, S.horizontalPilot]
 
@@ -140,7 +142,7 @@ theorem ordinary_output_eq_qPilot :
 noncomputable def toGeneratedOutputData :
     GeneratedOutputData.{u, v, max u₄ (max u₂ u₃)} S.container where
   Output := S.Choice
-  outputNonempty := ⟨.ordinary S.ordinaryEquiv⟩
+  outputNonempty := ⟨.inl S.ordinaryEquiv⟩
   realize c := S.realize (S.outputObject c)
   support := S.support
   realize_eq_integral_outside c i vQ hv :=
@@ -159,16 +161,19 @@ noncomputable def toGeneratedRHSData :
   outputs := S.toGeneratedOutputData
   union_hullAdmissible := by
     intro i
-    simpa [toGeneratedOutputData] using S.union_hullAdmissible i
+    simpa [toGeneratedOutputData, Choice, outputObject, ordinaryEquiv]
+      using S.union_hullAdmissible i
 
 /-- The source-shaped data construct one distinguished native output. -/
 noncomputable def toGeneratedNativeSource :
     GeneratedNativeSource.{u, v, max u₄ (max u₂ u₃)} D Q where
   rhs := S.toGeneratedRHSData
-  native := .ordinary S.ordinaryEquiv
+  native := .inl S.ordinaryEquiv
   nativeVolume := by
-    simpa [toGeneratedRHSData, toGeneratedOutputData,
-      outputObject] using S.qVolume
+    change S.vol.processionVol
+      (S.realize (S.outputObject (.inl S.ordinaryEquiv))) = Q.lhs
+    rw [S.ordinary_output_eq_qPilot]
+    exact S.qVolume
   processionVol_mono := S.processionVol_mono
 
 /-- The full-poly source closes the public numerical variant. -/
