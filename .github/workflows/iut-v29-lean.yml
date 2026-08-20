@@ -1,0 +1,35 @@
+name: IUT v2.9 Lean check
+
+on:
+  push:
+    branches:
+      - iut-v29-lean-ci
+    paths:
+      - 'iut-v29/**'
+      - '.github/workflows/iut-v29-lean.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build Lean project
+        uses: leanprover/lean-action@v1
+        with:
+          lake-package-directory: iut-v29
+          build: true
+          test: false
+          lint: false
+          use-mathlib-cache: true
+          build-args: --wfail
+      - name: Reject placeholders
+        shell: bash
+        run: |
+          if grep -RInE '^[[:space:]]*(sorry|admit|axiom)([[:space:]]|$)' \
+              iut-v29/IUTSourceShape; then
+            exit 1
+          fi
