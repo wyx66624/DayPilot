@@ -41,3 +41,10 @@ jobs:
             echo 'Found a prohibited proof placeholder declaration.'
             exit 1
           fi
+      - name: Upload Lean source package
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: iut-v30-actual-public-types-source
+          path: iut-v30
+          if-no-files-found: error
