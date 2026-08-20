@@ -7,6 +7,10 @@ on:
     paths:
       - 'iut-v29/**'
       - '.github/workflows/iut-v29-lean.yml'
+  pull_request:
+    paths:
+      - 'iut-v29/**'
+      - '.github/workflows/iut-v29-lean.yml'
   workflow_dispatch:
 
 permissions:
