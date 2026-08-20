@@ -14,6 +14,8 @@ IUT III family and a uniform downstream theorem.  Neither input is constructed b
 public IUT repository.
 -/
 
+set_option linter.checkUnivs false
+
 namespace IUTActualTypes
 
 open Iut
