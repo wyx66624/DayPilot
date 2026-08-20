@@ -58,7 +58,7 @@ structure AdmissiblePrimeRepresentationCore : Type (u + 1) where
 
 namespace AdmissiblePrimeRepresentationCore
 
-variable {G}
+variable {G : GlobalFieldCurveComponent.{u}}
 
 /-- Local inputs from which the public unique Tate parameter is generated. -/
 structure GeneratedLocalTateData
@@ -92,10 +92,11 @@ theorem chosenTate_tateJ
     (w : FinitePlace G.F)
     (hw : w ∈ badPlacesOver G.F G.E G.VBad) :
     (L.chosenTate w hw).tateJ =
-      FinitePlace.embedding w.maximalIdeal G.E.j :=
-  (Classical.choose_spec
-    (TateParameter.existsUnique_splitMultiplicative_tateParameter
-      (L.h12 w hw) (L.j_large w hw))).1
+      FinitePlace.embedding w.maximalIdeal G.E.j := by
+  simpa [chosenTate] using
+    (Classical.choose_spec
+      (TateParameter.existsUnique_splitMultiplicative_tateParameter
+        (L.h12 w hw) (L.j_large w hw))).1
 
 /-- The remaining local arithmetic condition after the Tate parameter is generated. -/
 def PrimeToChosenOrders (L : GeneratedLocalTateData R) : Prop :=
