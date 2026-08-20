@@ -1,0 +1,56 @@
+name: IUT admissible-prime and orbicurve inhabitation
+
+on:
+  push:
+    branches:
+      - iut-prime-orbicurve-v45
+  pull_request:
+    paths:
+      - 'iut-prime-orbicurve-v45/**'
+      - '.github/workflows/iut-prime-orbicurve-v45.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  FORMALIZATION_REVISION: v4.4-ci-1
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Extract source package
+        shell: bash
+        run: |
+          rm -rf _iut_prime_orbicurve_build
+          mkdir _iut_prime_orbicurve_build
+          unzip -q iut-prime-orbicurve-v45/source.zip -d _iut_prime_orbicurve_build
+      - name: Install Elan
+        shell: bash
+        run: |
+          curl -sSfL https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh \
+            | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Resolve dependencies and kernel-build
+        working-directory: _iut_prime_orbicurve_build/IUT_AdmissiblePrime_Orbicurve_Inhabitation_Lean_v4_4
+        shell: bash
+        run: |
+          lake update
+          lake build --wfail
+      - name: Reject placeholders
+        shell: bash
+        run: |
+          if grep -RInE '^[[:space:]]*(sorry|admit|axiom)([[:space:]]|$)' \
+              _iut_prime_orbicurve_build/IUT_AdmissiblePrime_Orbicurve_Inhabitation_Lean_v4_4/IUTPrimeOrbicurve; then
+            echo 'Found prohibited proof placeholder declaration.'
+            exit 1
+          fi
+      - name: Upload source
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: iut-prime-orbicurve-v44-source
+          path: _iut_prime_orbicurve_build/IUT_AdmissiblePrime_Orbicurve_Inhabitation_Lean_v4_4
+          if-no-files-found: error
