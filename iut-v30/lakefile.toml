@@ -1,0 +1,17 @@
+name = "IUTActualTypes"
+version = "0.3.0"
+defaultTargets = ["IUTActualTypes"]
+
+[leanOptions]
+pp.unicode.fun = true
+relaxedAutoImplicit = false
+weak.linter.mathlibStandardSet = true
+maxSynthPendingDepth = 3
+
+[[require]]
+name = "iut"
+git = "https://github.com/lana-agents/iut.git"
+rev = "ddaddc274281adb5674d647e24fa478745ac6d40"
+
+[[lean_lib]]
+name = "IUTActualTypes"
