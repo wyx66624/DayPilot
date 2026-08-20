@@ -21,15 +21,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Build Lean project
-        uses: leanprover/lean-action@v1
-        with:
-          lake-package-directory: iut-v29
-          build: true
-          test: false
-          lint: false
-          use-mathlib-cache: true
-          build-args: --wfail
+      - name: Install Elan
+        shell: bash
+        run: |
+          curl -sSfL https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh \
+            | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Resolve Mathlib and build
+        working-directory: iut-v29
+        shell: bash
+        run: |
+          lake update
+          lake exe cache get
+          lake build --wfail
       - name: Reject placeholders
         shell: bash
         run: |
