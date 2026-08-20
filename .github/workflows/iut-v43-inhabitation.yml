@@ -7,6 +7,10 @@ on:
     paths:
       - 'iut-v43-inhabitation/**'
       - '.github/workflows/iut-v43-inhabitation.yml'
+  pull_request:
+    paths:
+      - 'iut-v43-inhabitation/**'
+      - '.github/workflows/iut-v43-inhabitation.yml'
   workflow_dispatch:
 
 permissions:
