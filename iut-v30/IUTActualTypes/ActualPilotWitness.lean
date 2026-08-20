@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 ChatGPT. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: ChatGPT
+-/
 import Iut.Cor312.Statement
 
 /-!
@@ -54,8 +59,8 @@ theorem corollary312Variant (W : ActualPilotWitness X) :
     exact X.rhsData.hull.le_hullAdmissible
       (X.rhsData.thetaPilot_hullAdmissible i)
   have hregion : ∀ i, W.region i ≤ X.rhsData.thetaHull i := by
-    intro i
-    exact (W.region_le_thetaPilot i).trans (htheta i)
+    intro i vQ x hx
+    exact htheta i vQ (W.region_le_thetaPilot i vQ hx)
   calc
     X.qPilot.lhs = X.rhsData.vol.processionVol W.region := W.qVolume.symm
     _ ≤ X.rhsData.vol.processionVol X.rhsData.thetaHull :=
