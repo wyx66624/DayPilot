@@ -4,3 +4,4 @@ import IUTActualTypes.FullPolyGeneratedSource
 import IUTActualTypes.QuantifierCorrectClosure
 import IUTActualTypes.ABCStatement
 import IUTActualTypes.ABCClosure
+import IUTActualTypes.ThreeClosureTheorems
