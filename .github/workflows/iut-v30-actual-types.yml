@@ -1,0 +1,43 @@
+name: IUT v3.0 actual public types
+
+on:
+  push:
+    branches:
+      - iut-v30-actual-types
+    paths:
+      - 'iut-v30/**'
+      - '.github/workflows/iut-v30-actual-types.yml'
+  pull_request:
+    paths:
+      - 'iut-v30/**'
+      - '.github/workflows/iut-v30-actual-types.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Elan
+        shell: bash
+        run: |
+          curl -sSfL https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh \
+            | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Resolve dependencies and build
+        working-directory: iut-v30
+        shell: bash
+        run: |
+          lake update
+          lake build --wfail
+      - name: Reject placeholders
+        shell: bash
+        run: |
+          if grep -RInE '^[[:space:]]*(sorry|admit|axiom)([[:space:]]|$)' \
+              iut-v30/IUTActualTypes; then
+            echo 'Found a prohibited proof placeholder declaration.'
+            exit 1
+          fi
