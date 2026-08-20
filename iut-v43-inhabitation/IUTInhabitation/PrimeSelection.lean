@@ -15,10 +15,8 @@ set_option linter.style.header false
 
 namespace IUTInhabitation
 
-open scoped BigOperators
-
 private theorem mem_le_sum (s : Finset ℕ) {p : ℕ} (hp : p ∈ s) :
-    p ≤ ∑ q in s, q := by
+    p ≤ s.sum id := by
   classical
   induction s using Finset.induction_on with
   | empty => simp at hp
@@ -34,7 +32,7 @@ private theorem mem_le_sum (s : Finset ℕ) {p : ℕ} (hp : p ∈ s) :
 theorem exists_prime_above_not_mem (N : ℕ) (s : Finset ℕ) :
     ∃ p : ℕ, p.Prime ∧ N < p ∧ p ∉ s := by
   classical
-  let B : ℕ := N + (∑ q in s, q) + 1
+  let B : ℕ := N + s.sum id + 1
   rcases Nat.exists_infinite_primes B with ⟨p, hBp, hpprime⟩
   refine ⟨p, hpprime, ?_, ?_⟩
   · dsimp [B] at hBp
