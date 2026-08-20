@@ -1,5 +1,5 @@
 import Mathlib.Data.Nat.Prime.Infinite
-import Mathlib.Tactic.Omega
+import Mathlib.Tactic
 
 namespace IUTInhabitation
 
