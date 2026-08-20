@@ -3,10 +3,8 @@ import Mathlib.Data.Nat.Factorization.Basic
 
 namespace IUTSourceShape
 
-open scoped BigOperators
-
 def abcRadical (n : ℕ) : ℕ :=
-  ∏ p in n.primeFactors, p
+  n.primeFactors.prod id
 
 def PairwiseCoprimeABC (a b c : ℕ) : Prop :=
   Nat.Coprime a b ∧ Nat.Coprime b c ∧ Nat.Coprime c a
