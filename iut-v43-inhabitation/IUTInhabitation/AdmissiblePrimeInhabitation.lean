@@ -137,6 +137,13 @@ theorem nonempty_admissiblePrimeData
 
 end AdmissiblePrimeRepresentationCore
 
+/-- Public admissible-prime data whose selected prime is definitionally tied to an
+externally chosen natural number. -/
+structure AdmissiblePrimeAt
+    (G : GlobalFieldCurveComponent.{u}) (ℓ : ℕ) : Type (u + 1) where
+  data : AdmissiblePrimeData G.F G.E G.Fbar G.VBad
+  prime_eq : data.ℓ = ℓ
+
 /-- A precise eventual large-image theorem, sufficient for pointwise inhabitation. -/
 structure EventualAdmissiblePrimeFamily
     {Input : Type z} (C : GlobalCurveFamily.{u, z} Input) where
@@ -144,12 +151,7 @@ structure EventualAdmissiblePrimeFamily
   exceptional : Input → Finset ℕ
   construct : ∀ x ℓ,
     ℓ.Prime → threshold x < ℓ → ℓ ∉ exceptional x →
-      Nonempty
-        (AdmissiblePrimeData
-          (C.globalCurve x).F
-          (C.globalCurve x).E
-          (C.globalCurve x).Fbar
-          (C.globalCurve x).VBad)
+      Nonempty (AdmissiblePrimeAt (C.globalCurve x) ℓ)
 
 namespace EventualAdmissiblePrimeFamily
 
@@ -162,7 +164,8 @@ theorem admissiblePrimeFamilyExists
   intro x
   rcases exists_prime_above_not_mem (A.threshold x) (A.exceptional x) with
     ⟨ℓ, hℓ, hlarge, hex⟩
-  exact A.construct x ℓ hℓ hlarge hex
+  rcases A.construct x ℓ hℓ hlarge hex with ⟨W⟩
+  exact ⟨W.data⟩
 
 end EventualAdmissiblePrimeFamily
 
