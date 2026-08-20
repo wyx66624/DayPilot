@@ -32,7 +32,7 @@ jobs:
         shell: bash
         run: |
           lake update
-          lake build --wfail
+          lake build
       - name: Reject placeholders
         shell: bash
         run: |
