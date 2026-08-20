@@ -14,6 +14,9 @@ definitional.  A common finite-support hypothesis is required because an arbitra
 infinite union of restricted-product regions need not be admissible.
 -/
 
+set_option linter.unusedVariables false
+set_option linter.checkUnivs false
+
 namespace IUTActualTypes
 
 open Iut NumberField
