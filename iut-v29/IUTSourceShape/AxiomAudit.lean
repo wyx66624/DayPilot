@@ -1,0 +1,17 @@
+import IUTSourceShape.FullPolyConjugation
+import IUTSourceShape.OrdinaryChoiceUnion
+import IUTSourceShape.RestrictedCountermodel
+import IUTSourceShape.ConditionalABC
+
+namespace IUTSourceShape
+
+#print axioms conjugate_apply_kummer
+#print axioms conjugate_mem_full
+#print axioms FullPolyPilotData.ordinaryWitness_output
+#print axioms FullPolyPilotData.singleton_qPilot_subset_thetaRegion
+#print axioms FullPolyPilotData.bridge
+#print axioms FullPolyPilotData.coefficient_ge_neg_one
+#print axioms conjugate_not_mem_restricted
+#print axioms abc_of_full_poly_source
+
+end IUTSourceShape
