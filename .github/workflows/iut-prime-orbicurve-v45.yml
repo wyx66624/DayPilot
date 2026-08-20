@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - iut-prime-orbicurve-v45
+  pull_request:
     paths:
       - 'iut-prime-orbicurve-v45/**'
       - '.github/workflows/iut-prime-orbicurve-v45.yml'
@@ -11,6 +12,9 @@ on:
 
 permissions:
   contents: read
+
+env:
+  FORMALIZATION_REVISION: v4.4-ci-1
 
 jobs:
   build:
@@ -43,7 +47,7 @@ jobs:
             echo 'Found prohibited proof placeholder declaration.'
             exit 1
           fi
-      - name: Upload source and build logs
+      - name: Upload source
         if: always()
         uses: actions/upload-artifact@v4
         with:
