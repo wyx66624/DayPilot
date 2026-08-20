@@ -26,13 +26,14 @@ structure GlobalFieldCurveComponent : Type (u + 1) where
   Fbar : Type u
   [fieldFbar : Field Fbar]
   [algebraFbar : Algebra F Fbar]
+  [isAlgClosureFbar : IsAlgClosure F Fbar]
   E : WeierstrassCurve F
   [isElliptic : E.IsElliptic]
   VBad : Set (FinitePlace ↥(fieldOfModuli F E))
 
 namespace GlobalFieldCurveComponent
 
-attribute [instance] fieldF numberFieldF fieldFbar algebraFbar isElliptic
+attribute [instance] fieldF numberFieldF fieldFbar algebraFbar isAlgClosureFbar isElliptic
 
 end GlobalFieldCurveComponent
 
